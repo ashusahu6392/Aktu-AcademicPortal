@@ -58,4 +58,29 @@ public class AdminServiceImpl implements AdminService {
 
         return subject;
     }
+
+    @Override
+    public void deleteCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+        // Remove cascading branches
+        courseRepository.delete(course);
+    }
+
+    @Override
+    public void deleteBranch(Long branchId) {
+        Branch branch = branchRepository.findById(branchId)
+                .orElseThrow(() -> new RuntimeException("Branch not found"));
+        // Note: subjects remain; simply delete branch
+        branchRepository.delete(branch);
+    }
+
+    @Override
+    public void deleteSubject(String subjectCode) {
+        Subject subject = subjectRepository.findById(subjectCode)
+                .orElseThrow(() -> new RuntimeException("Subject not found"));
+        // Remove associations with branches first
+        subject.getBranches().forEach(b -> b.getSubjects().remove(subject));
+        subjectRepository.delete(subject);
+    }
 }

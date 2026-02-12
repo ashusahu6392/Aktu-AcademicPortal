@@ -13,4 +13,11 @@ public interface AdminService {
     Subject addSubjectToBranch(Long branchId,
                                String subjectCode,
                                String subjectName);
+
+    // Deletion APIs
+    void deleteCourse(Long courseId);
+
+    void deleteBranch(Long branchId);
+
+    void deleteSubject(String subjectCode);
 }
