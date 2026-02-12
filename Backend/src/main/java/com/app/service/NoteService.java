@@ -9,7 +9,7 @@ public interface NoteService {
 
     List<Note> getAllNotes();
 
-    List<Note> getNotesBySubject(Long subjectId);
+    List<Note> getNotesBySubject(String subjectId);
 
     List<Note> getNotesByTeacher(Long teacherId);
 }

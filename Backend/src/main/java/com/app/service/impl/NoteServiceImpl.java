@@ -32,9 +32,10 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<Note> getNotesBySubject(Long subjectId) {
-        return noteRepository.findBySubjectId(subjectId);
+    public List<Note> getNotesBySubject(String subjectId) {
+        return noteRepository.findBySubjectSubjectCode(subjectId);
     }
+
 
     @Override
     public List<Note> getNotesByTeacher(Long teacherId) {

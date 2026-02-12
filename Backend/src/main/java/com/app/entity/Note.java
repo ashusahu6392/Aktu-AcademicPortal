@@ -1,22 +1,15 @@
 package com.app.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
 
-@Entity
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@ToString(exclude = {"teacher", "subject"})
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
 public class Note {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(nullable = false, length = 200)
@@ -38,10 +31,12 @@ public class Note {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", nullable = false)
+    @JsonBackReference("teacher-note")
     private Teacher teacher;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id", nullable = false)
+    @JsonBackReference("subject-note")
     private Subject subject;
 
     private LocalDateTime uploadDate;
@@ -130,9 +125,4 @@ public class Note {
 	public void setUploadDate(LocalDateTime uploadDate) {
 		this.uploadDate = uploadDate;
 	}
-    
-    
-    
-    
-    
 }

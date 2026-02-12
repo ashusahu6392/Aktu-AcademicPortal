@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface NoteRepository extends JpaRepository<Note, Long> {
 
-    List<Note> findBySubjectId(Long subjectId);
+	List<Note> findBySubjectSubjectCode(String subjectCode);
 
     List<Note> findByTeacherId(Long teacherId);
 }

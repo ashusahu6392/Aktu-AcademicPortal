@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${selectedSubjectCode} + ' - Subject'">Subject</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-4">
+    <div class="row">
+        <aside class="col-md-3">
+            <div th:insert="~{fragments/sidebar :: sidebar}"></div>
+        </aside>
+
+        <main class="col-md-9">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 th:text="${selectedSubjectCode}"></h5>
+                    <p class="text-muted">Units and Topics</p>
+
+                    <div th:if="${units == null or #lists.isEmpty(units)}" class="text-muted">No units available for this subject.</div>
+
+                    <div th:if="${units != null and !#lists.isEmpty(units)}" class="list-group">
+                        <div th:each="u : ${units}" class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>Unit <span th:text="${u}"></span></strong>
+                                <div class="small text-muted">Click a unit on the left to view topics.</div>
+                            </div>
+                            <div>
+                                <a th:href="@{/student/subject/{code}/unit/{unitNo}(code=${selectedSubjectCode},unitNo=${u})}" class="btn btn-sm btn-outline-primary">Open</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>
