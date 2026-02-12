@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Note</title>
+
+    <!-- CKEditor CDN -->
+    <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
+</head>
+<body>
+
+<h2>Add Note</h2>
+
+<form th:action="@{/notes/save}" th:object="${note}" method="post">
+
+    <label>Title:</label>
+    <input type="text" th:field="*{title}" required />
+    <br><br>
+
+    <label>Unit No:</label>
+    <input type="number" th:field="*{unitNo}" required />
+    <br><br>
+
+    <label>Description:</label>
+    <input type="text" th:field="*{description}" />
+    <br><br>
+
+    <label>Content:</label>
+    <textarea th:field="*{content}" id="editor"></textarea>
+
+    <br><br>
+    <button type="submit">Save Note</button>
+</form>
+
+<script>
+    CKEDITOR.replace('editor');
+</script>
+
+</body>
+</html>
