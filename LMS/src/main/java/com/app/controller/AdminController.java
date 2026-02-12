@@ -1,6 +1,5 @@
 package com.app.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,16 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.app.entity.Branch;
-import com.app.entity.Course;
-import com.app.entity.Subject;
-import com.app.service.AdminService;
-import com.app.repository.CourseRepository;
-import com.app.repository.BranchRepository;
-import com.app.repository.SubjectRepository;
-import com.app.dto.CourseDto;
 import com.app.dto.BranchDto;
+import com.app.dto.CourseDto;
 import com.app.dto.SubjectDto;
+import com.app.repository.BranchRepository;
+import com.app.repository.CourseRepository;
+import com.app.repository.SubjectRepository;
+import com.app.service.AdminService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -185,5 +181,12 @@ public class AdminController {
         adminService.deleteSubject(code);
         redirectAttributes.addFlashAttribute("success", "Subject deleted");
         return "redirect:/admin/subjects";
+    }
+
+    // Temporary test login endpoint (DEV ONLY) - sets admin session and redirects to admin dashboard
+    @GetMapping("/test-login")
+    public String testLogin(HttpSession session) {
+        session.setAttribute("isAdmin", true);
+        return "redirect:/admin";
     }
 }
