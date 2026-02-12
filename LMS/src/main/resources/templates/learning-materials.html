@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Learning Materials</title>
+</head>
+<body>
+
+<h2>All Learning Materials</h2>
+
+<div th:each="material : ${materials}">
+
+    <h3 th:text="${material.title}"></h3>
+
+    <p>
+        Unit: <span th:text="${material.unitNo}"></span>
+    </p>
+
+    <!-- Render CKEditor HTML -->
+    <div th:utext="${material.content}"></div>
+
+    <hr>
+</div>
+
+</body>
+</html>

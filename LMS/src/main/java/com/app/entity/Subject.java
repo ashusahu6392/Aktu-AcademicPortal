@@ -26,25 +26,25 @@ public class Subject {
     @JsonBackReference("branch-subject")
     private Set<Branch> branches = new HashSet<>();
 
-    // Many-to-Many with Teacher
+    // Many-to-Many with Instructor (was Teacher)
     @ManyToMany(mappedBy = "subjects")
-    @JsonBackReference("teacher-subject")
-    private Set<Teacher> teachers = new HashSet<>();
+    @JsonBackReference("instructor-subject")
+    private Set<Instructor> instructors = new HashSet<>();
 
-    // One-to-Many with Note
+    // One-to-Many with LearningMaterial (was Note)
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
-    @JsonManagedReference("subject-note")
-    private List<Note> notes = new ArrayList<>();
+    @JsonManagedReference("subject-learningmaterial")
+    private List<LearningMaterial> learningMaterials = new ArrayList<>();
 
     public Subject() {
     }
 
-    public Subject(String subjectCode, String subjectName, Set<Branch> branches, Set<Teacher> teachers, List<Note> notes) {
+    public Subject(String subjectCode, String subjectName, Set<Branch> branches, Set<Instructor> instructors, List<LearningMaterial> learningMaterials) {
         this.subjectCode = subjectCode;
         this.subjectName = subjectName;
         this.branches = branches != null ? branches : new HashSet<>();
-        this.teachers = teachers != null ? teachers : new HashSet<>();
-        this.notes = notes != null ? notes : new ArrayList<>();
+        this.instructors = instructors != null ? instructors : new HashSet<>();
+        this.learningMaterials = learningMaterials != null ? learningMaterials : new ArrayList<>();
     }
 
     public String getSubjectCode() {
@@ -71,20 +71,20 @@ public class Subject {
         this.branches = branches != null ? branches : new HashSet<>();
     }
 
-    public Set<Teacher> getTeachers() {
-        return teachers;
+    public Set<Instructor> getInstructors() {
+        return instructors;
     }
 
-    public void setTeachers(Set<Teacher> teachers) {
-        this.teachers = teachers != null ? teachers : new HashSet<>();
+    public void setInstructors(Set<Instructor> instructors) {
+        this.instructors = instructors != null ? instructors : new HashSet<>();
     }
 
-    public List<Note> getNotes() {
-        return notes;
+    public List<LearningMaterial> getLearningMaterials() {
+        return learningMaterials;
     }
 
-    public void setNotes(List<Note> notes) {
-        this.notes = notes != null ? notes : new ArrayList<>();
+    public void setLearningMaterials(List<LearningMaterial> learningMaterials) {
+        this.learningMaterials = learningMaterials != null ? learningMaterials : new ArrayList<>();
     }
 
     @Override

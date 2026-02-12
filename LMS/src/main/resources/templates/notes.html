@@ -1,25 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
-    <title>All Notes</title>
+    <meta http-equiv="refresh" content="0; url=/learning-materials" />
 </head>
 <body>
-
-<h2>All Notes</h2>
-
-<div th:each="note : ${notes}">
-
-    <h3 th:text="${note.title}"></h3>
-
-    <p>
-        Unit: <span th:text="${note.unitNo}"></span>
-    </p>
-
-    <!-- Render CKEditor HTML -->
-    <div th:utext="${note.content}"></div>
-
-    <hr>
-</div>
-
+<p>Redirecting to <a href="/learning-materials">All Learning Materials</a>...</p>
 </body>
 </html>

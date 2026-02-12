@@ -1,97 +1,114 @@
-# AKTU Academic Portal - LMS
+# AKTU Academic Portal (LMS) — Refactor Notes
 
-A lightweight Learning Management System (LMS) for academic notes built with Spring Boot and Thymeleaf.
+This repository contains a Spring Boot LMS application. This README documents a refactor that renamed several domain concepts and updated controllers, services, repositories and UI templates accordingly.
 
-This project provides a simple portal for teachers to register/login and upload notes (topics) organized by subjects and units, and for students to browse subjects, units, and view topics.
+Summary of renames
 
-Project layout
-- Java 17, Spring Boot (parent: 4.0.2)
-- Thymeleaf templates for server-rendered UI located in `src/main/resources/templates`
-- Static assets (CSS/JS) in `src/main/resources/static`
-- JPA entities and repositories under `com.app.entity` and `com.app.repository`
+- Entities
+  - `Note` → `LearningMaterial` (entity class: `com.app.entity.LearningMaterial`)
+  - `Teacher` → `Instructor` (entity class: `com.app.entity.Instructor`)
+  - `Student` → `Learner` (UI/controller name: `LearnerController`, templates under `templates/learner`)
 
-Key pages
-- `/` - public home page
-- `/teacher/register` - teacher registration (web)
-- `/teacher/login` - teacher login (web)
-- `/teacher/dashboard` - teacher dashboard to add notes (requires login)
-- `/notes` - list notes (web)
-- `/notes/add` - add note form (web)
-- `/student` - student index (list subjects)
-- `/student/subject/{subjectCode}` - view a subject and its units
-- `/student/subject/{subjectCode}/unit/{unitNo}` - view topics in a unit
-- `/student/topic/{noteId}` - view a single topic/note
+- Repositories / Services / Controllers / DTOs
+  - `NoteRepository` → `LearningMaterialRepository`
+  - `NoteService` → `LearningMaterialService`
+  - `NoteServiceImpl` → `LearningMaterialServiceImpl`
+  - `NoteController` → `LearningMaterialController` (URL base changed)
 
-API endpoints
-- `GET /api/teacher/subjects` - returns all subjects (JSON)
-- `POST /api/teacher/register` - register a teacher (JSON body: `TeacherRegisterDto`)
+  - `TeacherRepository` → `InstructorRepository`
+  - `TeacherService` → `InstructorService`
+  - `TeacherServiceImpl` → `InstructorServiceImpl`
+  - `TeacherController` → `InstructorController` (API)
+  - `TeacherWebController` → `InstructorWebController` (web views)
+  - `TeacherRegisterDto` → `InstructorRegisterDto`
 
-Configuration (application.properties)
-- Default datasource is MySQL:
-  - URL: `jdbc:mysql://127.0.0.1:3306/aktu`
-  - Username: `root`
-  - Password: `boot`
-- JPA is configured with `spring.jpa.hibernate.ddl-auto=update`
-- A simple Spring Security user is provided in properties:
-  - Username: `admin`
-  - Password: `admin123`
+  - `StudentController` → `LearnerController` (web views)
 
-Requirements
-- Java 17
-- Maven 3.6+ (or the included Maven Wrapper `mvnw` / `mvnw.cmd`)
-- MySQL (or change datasource to another DB in `application.properties`)
+- Template and URL changes (major ones)
+  - `/notes` → `/learning-materials`
+    - Template: `templates/learning-materials.html` (previously `notes.html`)
+    - Add form: `templates/add-learning-material.html` (previously `add-note.html`)
+  - `/teacher/*` → `/instructor/*` (register/login/dashboard endpoints updated)
+    - Templates: `templates/instructor-register.html`, `templates/instructor-login.html`, `templates/instructor-dashboard.html`
+  - `/student/*` → `/learner/*` (UI pages moved under `templates/learner`)
 
-Quick start
-1. Update `src/main/resources/application.properties` with your DB credentials (or use the defaults for a local test MySQL instance):
+What I changed (high level)
 
-```ini
-spring.datasource.url=jdbc:mysql://127.0.0.1:3306/aktu?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-spring.datasource.username=root
-spring.datasource.password=boot
+- Added/updated JPA entities: `Instructor` and `LearningMaterial` with `@Table` names (defaults set to `instructor` and `learning_material`).
+- Created matching Spring Data repositories, services and service implementations.
+- Updated controllers (REST and web) and their request mappings.
+- Updated and created templates (Thymeleaf): instructor, learner and learning-material pages.
+- Replaced legacy files with placeholders/redirects to avoid duplicate public type compilation errors during refactor. These placeholders can be removed from VCS when you are ready.
+
+Build & run (Windows / cmd.exe)
+
+Open a Command Prompt at the project root (where `mvnw.cmd` is) and run:
+
+```batch
+cd C:\Users\Office\Desktop\GitHub\Aktu-AcademicPortal\LMS
+.\mvnw.cmd -DskipTests package
 ```
 
-2. Build and run with the Maven wrapper (Windows):
+To run the application locally:
 
-```powershell
-mvnw.cmd clean package
-mvnw.cmd spring-boot:run
+```batch
+cd C:\Users\Office\Desktop\GitHub\Aktu-AcademicPortal\LMS
+.\mvnw.cmd spring-boot:run
 ```
 
-Or using your installed Maven:
+Quick smoke test (after app starts)
 
-```powershell
-mvn clean package
-mvn spring-boot:run
+- Instructor register (web): http://localhost:8080/instructor/register
+- Instructor login (web): http://localhost:8080/instructor/login
+- Instructor dashboard (web): http://localhost:8080/instructor/dashboard
+- List learning materials: http://localhost:8080/learning-materials
+- Learner (student) home: http://localhost:8080/learner
+
+Notes on database/table names
+
+- New entities use these table names by default (via `@Table`):
+  - `Instructor` → `instructor`
+  - `LearningMaterial` → `learning_material`
+
+If your existing database already used `teacher` and `note` tables and you want the new entities to reuse the older table names, change the `@Table(name = "teacher")` or `@Table(name = "note")` accordingly in the `Instructor` and `LearningMaterial` classes.
+
+Cleaning up legacy files
+
+- During the refactor I left a small placeholder comment in some old files (for example old `Note.java` and `Teacher.java`) to avoid accidental duplicate type errors during the multi-step migration. If you are ready to remove them from your repository, run:
+
+```batch
+cd C:\Users\Office\Desktop\GitHub\Aktu-AcademicPortal\LMS
+git rm src\main\java\com\app\entity\Teacher.java src\main\java\com\app\entity\Note.java
+# also remove any old controller/service files that remain as placeholders if desired
+git commit -m "Remove legacy placeholder files after refactor"
 ```
 
-3. Open in browser: http://localhost:8080/
+Search tips
 
-Developer notes
-- The project provides a simple session-based login for teachers (not a production-ready auth system).
-- Passwords are stored encoded by a `PasswordEncoder` via `TeacherService`.
-- HTML content sanitization for notes is implemented using jsoup in `NoteServiceImpl`.
-- Data model includes entities: `Teacher`, `Subject`, `Note`, `Course`, `Branch` (see `com.app.entity`).
+- To find any remaining old name usage you can run a workspace-wide search for `Note`, `Teacher`, or `/teacher/` and `/student/` in templates; I updated the majority of occurrences.
 
-Testing
-- Unit tests (if present) are located under `src/test/java` and can be run with:
+Known considerations & next steps
 
-```powershell
-mvnw.cmd test
-```
+- I intentionally kept public HTTP paths for web flows updated to `/instructor` and `/learner`. If you have external integrations that rely on the old paths (`/teacher` or `/student`) consider adding temporary redirects or keep the old endpoints redirecting to the new ones (I added meta redirect pages for old templates to ease transition).
+- If you want me to fully remove legacy files from the repository I can do that next (I left placeholders instead of hard deletes to be conservative).
+- If you prefer different table names (reuse `teacher` / `note`) I can change the `@Table` annotations to exactly map to your DB.
 
-Security & production notes
-- This project is intended as a learning/demo application. For production use:
-  - Replace the simple session handling with Spring Security properly configured.
-  - Externalize configuration (don’t keep passwords in properties files).
-  - Use HTTPS and secure cookies for sessions.
-  - Harden authentication and authorization controls and validate inputs thoroughly.
+Contact points in the code (quick map)
 
-Contributing
-- Fork the repository, create a feature branch, and open a pull request with a clear description of changes.
-- Run tests and ensure the application builds before submitting.
+- Entity classes: `src/main/java/com/app/entity/Instructor.java`, `src/main/java/com/app/entity/LearningMaterial.java`
+- Repositories: `src/main/java/com/app/repository/InstructorRepository.java`, `src/main/java/com/app/repository/LearningMaterialRepository.java`
+- Services: `src/main/java/com/app/service/InstructorService.java`, `src/main/java/com/app/service/LearningMaterialService.java`
+- Controllers (web/API):
+  - `src/main/java/com/app/controller/InstructorWebController.java` (web)
+  - `src/main/java/com/app/controller/InstructorController.java` (API)
+  - `src/main/java/com/app/controller/LearningMaterialController.java`
+  - `src/main/java/com/app/controller/LearnerController.java`
+- Templates: `src/main/resources/templates/instructor-*.html`, `src/main/resources/templates/learning-materials.html`, `src/main/resources/templates/add-learning-material.html`, `src/main/resources/templates/learner/*`
 
-License
-- No license specified in the repository. Add a LICENSE file if you intend to open-source this project.
+If you'd like I can now:
 
-Contact
-- For questions or help, open an issue on the repository on GitHub.
+- Remove the legacy placeholder files from the repo (I can stage and commit deletions), or
+- Update `@Table` names to reuse old DB table names, or
+- Start the application and perform a short smoke test (automated curl requests) and share the results.
+
+Tell me which of those you'd like me to do next and I will proceed.

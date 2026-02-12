@@ -5,13 +5,13 @@
             <span class="ms-2">T-Portal</span>
         </a>
 
-        <form class="d-flex ms-auto me-3" th:action="@{/student/search}" method="get">
+        <form class="d-flex ms-auto me-3" th:action="@{/learner/search}" method="get">
             <input class="form-control" name="q" type="search" placeholder="Search topics, titles..." aria-label="Search">
             <button class="btn btn-outline-secondary ms-2" type="submit">Search</button>
         </form>
 
         <div>
-            <a th:href="@{/teacher/login}" class="btn btn-sm btn-outline-primary me-2">Teacher</a>
+            <a th:href="@{/instructor/login}" class="btn btn-sm btn-outline-primary me-2">Instructor</a>
             <a th:href="@{/logout}" class="btn btn-sm btn-outline-danger">Logout</a>
         </div>
     </div>
