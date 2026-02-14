@@ -1,0 +1,29 @@
+<div th:fragment="teacherSidebar" class="col-lg-2 d-lg-block sidebar">
+    <div class="mb-4 text-white text-center">
+        <div class="brand">AKTU LMS</div>
+        <div class="text-white-50 small">Instructor</div>
+    </div>
+
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link active d-flex align-items-center" th:href="@{/instructor/dashboard}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" th:href="@{/instructor/courses}">
+                <i class="bi bi-journal-bookmark"></i> Courses
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link d-flex align-items-center" th:href="@{/instructor/students}">
+                <i class="bi bi-people"></i> Students
+            </a>
+        </li>
+        <li class="nav-item mt-2">
+            <a class="nav-link d-flex align-items-center" th:href="@{/instructor/settings}">
+                <i class="bi bi-gear"></i> Settings
+            </a>
+        </li>
+    </ul>
+</div>
