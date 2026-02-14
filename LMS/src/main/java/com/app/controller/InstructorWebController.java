@@ -47,7 +47,7 @@ public class InstructorWebController {
     public String showRegisterForm(Model model) {
         model.addAttribute("instructor", new InstructorRegisterDto());
         model.addAttribute("subjects", subjectRepository.findAll());
-        return "instructor-register";
+        return "teacher/instructor-register";
     }
 
     @PostMapping("/register")
@@ -56,17 +56,17 @@ public class InstructorWebController {
         if (dto.getName() == null || dto.getName().trim().isEmpty()) {
             model.addAttribute("error", "Name is required");
             model.addAttribute("subjects", subjectRepository.findAll());
-            return "instructor-register";
+            return "teacher/instructor-register";
         }
         if (dto.getEmail() == null || !dto.getEmail().contains("@")) {
             model.addAttribute("error", "Valid work email is required");
             model.addAttribute("subjects", subjectRepository.findAll());
-            return "instructor-register";
+            return "teacher/instructor-register";
         }
         if (dto.getPassword() == null || dto.getPassword().length() < 6) {
             model.addAttribute("error", "Password must be at least 6 characters");
             model.addAttribute("subjects", subjectRepository.findAll());
-            return "instructor-register";
+            return "teacher/instructor-register";
         }
 
         // Save via service (it encodes the password)
@@ -78,26 +78,26 @@ public class InstructorWebController {
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         model.addAttribute("email", "");
-        return "instructor-login";
+        return "teacher/instructor-login";
     }
 
     @PostMapping("/login")
     public String login(String email, String password, Model model, HttpSession session) {
         if (email == null || password == null) {
             model.addAttribute("error", "Email and password are required");
-            return "instructor-login";
+            return "teacher/instructor-login";
         }
 
         Optional<Instructor> tOpt = instructorRepository.findByEmail(email);
         if (tOpt.isEmpty()) {
             model.addAttribute("error", "Invalid credentials");
-            return "instructor-login";
+            return "teacher/instructor-login";
         }
 
         Instructor instructor = tOpt.get();
         if (!passwordEncoder.matches(password, instructor.getPassword())) {
             model.addAttribute("error", "Invalid credentials");
-            return "instructor-login";
+            return "teacher/instructor-login";
         }
 
         // Simple session login placeholder
@@ -126,7 +126,7 @@ public class InstructorWebController {
         model.addAttribute("subjects", subjects);
         model.addAttribute("material", new LearningMaterial());
 
-        return "instructor-dashboard";
+        return "teacher/instructor-dashboard";
     }
 
     @PostMapping("/dashboard/save")
@@ -148,7 +148,7 @@ public class InstructorWebController {
         Subject subject = subjectRepository.findById(subjectCode).orElse(null);
         if (subject == null) {
             model.addAttribute("error", "Subject not found");
-            return "instructor-dashboard";
+            return "teacher/instructor-dashboard";
         }
 
         material.setInstructor(instructor);

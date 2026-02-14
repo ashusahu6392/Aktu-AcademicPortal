@@ -27,7 +27,7 @@ public class LearningMaterialController {
     @GetMapping
     public String getAllLearningMaterials(Model model) {
         model.addAttribute("materials", learningMaterialService.getAllLearningMaterials());
-        return "learning-materials";
+        return "home/learning-materials";
     }
 
     @GetMapping("/add")
@@ -35,7 +35,7 @@ public class LearningMaterialController {
         model.addAttribute("material", new LearningMaterial());
         model.addAttribute("instructors", instructorRepository.findAll());
         model.addAttribute("subjects", subjectRepository.findAll());
-        return "add-learning-material";
+        return "home/add-learning-material";
     }
 
     @PostMapping("/save")
