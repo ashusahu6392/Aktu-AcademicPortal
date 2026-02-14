@@ -1,5 +1,6 @@
-<!— Reusable auth card fragment —>
+<!-- templates/fragments/auth-card.html -->
 <div th:fragment="authCard(title,buttonText,action)">
+
     <div class="card login-card p-4">
 
         <div class="text-center mb-3">
@@ -7,10 +8,15 @@
             <h4 class="fw-semibold" th:text="${title}">Auth</h4>
         </div>
 
-        <div th:replace="~{::content}"></div>
+        <!-- This will insert content from calling page -->
+        <div th:insert="~{::content}"></div>
 
         <hr>
 
-        <p class="text-center footer-text">Use the seeded admin if you need a quick admin account</p>
+        <p class="text-center footer-text">
+            Use the seeded admin if you need a quick admin account
+        </p>
+
     </div>
+
 </div>

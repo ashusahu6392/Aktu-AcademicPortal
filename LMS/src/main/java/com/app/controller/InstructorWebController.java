@@ -344,42 +344,65 @@ public class InstructorWebController {
             return "redirect:/instructor/login";
         }
 
-        // materials authored by this instructor
-        List<com.app.entity.LearningMaterial> materials = learningMaterialService.getLearningMaterialsByInstructor(instructorId);
-
-        // totals
-        int totalMaterials = materials.size();
+        // Use repository aggregation for per-subject summaries and counts
+        List<com.app.dto.SubjectSummary> summaries = learningMaterialRepository.findSubjectSummariesByInstructorId(instructorId);
+        long totalMaterials = learningMaterialRepository.countByInstructorId(instructorId);
         int totalSubjects = instructor.getSubjects() != null ? instructor.getSubjects().size() : 0;
-
-        // per-subject summary: materials count and distinct unit count
-        // key by subjectCode
-        java.util.Map<String, java.util.Set<Integer>> unitsBySubject = new java.util.HashMap<>();
-        java.util.Map<String, Integer> materialsBySubject = new java.util.HashMap<>();
-        java.util.Map<String, String> subjectNames = new java.util.HashMap<>();
-
-        for (com.app.entity.LearningMaterial m : materials) {
-            if (m.getSubject() == null) continue;
-            String code = m.getSubject().getSubjectCode();
-            subjectNames.putIfAbsent(code, m.getSubject().getSubjectName());
-            materialsBySubject.put(code, materialsBySubject.getOrDefault(code, 0) + 1);
-            unitsBySubject.computeIfAbsent(code, k -> new java.util.HashSet<>());
-            if (m.getUnitNo() != null) unitsBySubject.get(code).add(m.getUnitNo());
-        }
-
-        // Build list of summaries
-        java.util.List<java.util.Map<String, Object>> summaries = new java.util.ArrayList<>();
-        for (String code : subjectNames.keySet()) {
-            java.util.Map<String, Object> s = new java.util.HashMap<>();
-            s.put("subjectCode", code);
-            s.put("subjectName", subjectNames.get(code));
-            s.put("materialsCount", materialsBySubject.getOrDefault(code, 0));
-            s.put("unitsCount", unitsBySubject.getOrDefault(code, java.util.Set.of()).size());
-            summaries.add(s);
+        // compute total units across subjects
+        int totalUnits = 0;
+        if (summaries != null) {
+            for (com.app.dto.SubjectSummary s : summaries) {
+                totalUnits += s.getUnitsCount();
+            }
         }
 
         model.addAttribute("instructorProfile", instructor);
-        model.addAttribute("totals", java.util.Map.of("materials", totalMaterials, "subjects", totalSubjects));
+        model.addAttribute("totals", java.util.Map.of("materials", totalMaterials, "subjects", totalSubjects, "units", totalUnits));
         model.addAttribute("subjectsSummary", summaries);
+
+        return "teacher/instructor-overview";
+    }
+
+    // New: show courses page - reuse overview template but set active nav
+    @GetMapping("/courses")
+    public String showCourses(Model model, HttpSession session, @RequestParam(value = "showAdd", required = false) Integer showAdd) {
+        Object iid = session.getAttribute("instructorId");
+        if (iid == null) {
+            return "redirect:/instructor/login";
+        }
+        Long instructorId;
+        try {
+            if (iid instanceof Long) instructorId = (Long) iid;
+            else if (iid instanceof Integer) instructorId = ((Integer) iid).longValue();
+            else instructorId = Long.valueOf(String.valueOf(iid));
+        } catch (Exception ex) {
+            return "redirect:/instructor/login";
+        }
+
+        Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
+        if (instructor == null) {
+            session.removeAttribute("instructorId");
+            return "redirect:/instructor/login";
+        }
+
+        // Prepare model similar to overview
+        List<com.app.dto.SubjectSummary> summaries = learningMaterialRepository.findSubjectSummariesByInstructorId(instructorId);
+        long totalMaterials = learningMaterialRepository.countByInstructorId(instructorId);
+        int totalSubjects = instructor.getSubjects() != null ? instructor.getSubjects().size() : 0;
+
+        int totalUnits = 0;
+        if (summaries != null) {
+            for (com.app.dto.SubjectSummary s : summaries) {
+                totalUnits += s.getUnitsCount();
+            }
+        }
+
+        model.addAttribute("instructorProfile", instructor);
+        model.addAttribute("totals", java.util.Map.of("materials", totalMaterials, "subjects", totalSubjects, "units", totalUnits));
+        model.addAttribute("subjectsSummary", summaries);
+        model.addAttribute("subjects", List.copyOf(instructor.getSubjects()));
+        model.addAttribute("activeNav", "courses");
+        model.addAttribute("showAddModal", showAdd != null && showAdd == 1);
 
         return "teacher/instructor-overview";
     }

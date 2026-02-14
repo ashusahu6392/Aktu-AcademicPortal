@@ -25,13 +25,13 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar fragment (replace so column is direct child of .row) -->
-        <div th:replace="fragments/teacher-sidebar :: teacherSidebar"></div>
+        <div th:replace="~{fragments/teacher-sidebar :: teacherSidebar}"></div>
 
         <!-- Main content -->
         <main class="col-lg-10 ms-sm-auto px-4">
 
             <!-- Topbar -->
-            <div th:replace="fragments/teacher-topbar :: teacherTopbar"></div>
+            <div th:replace="~{fragments/teacher-topbar :: teacherTopbar}"></div>
 
             <div class="mb-4">
                 <h3 class="fw-semibold">Create Learning Material</h3>
@@ -40,7 +40,7 @@
 
             <div class="card p-4">
 
-                <form th:action="@{/instructor/material/save}"
+                <form th:action="@{${formAction}}"
                       th:object="${material}"
                       method="post"
                       enctype="multipart/form-data">

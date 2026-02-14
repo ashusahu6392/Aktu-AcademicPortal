@@ -7,9 +7,9 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <div th:insert="fragments/teacher-sidebar :: teacherSidebar"></div>
+        <div th:replace="~{fragments/teacher-sidebar :: teacherSidebar}"></div>
         <main class="col-lg-10 ms-sm-auto px-4">
-            <div th:insert="fragments/teacher-topbar :: teacherTopbar"></div>
+            <div th:replace="~{fragments/teacher-topbar :: teacherTopbar}"></div>
 
             <div class="container py-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">

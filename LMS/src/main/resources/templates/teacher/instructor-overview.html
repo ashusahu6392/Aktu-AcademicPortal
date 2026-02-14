@@ -12,9 +12,9 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <div th:replace="fragments/teacher-sidebar :: teacherSidebar"></div>
+        <div th:replace="~{fragments/teacher-sidebar :: teacherSidebar}"></div>
         <main class="col-lg-10 ms-sm-auto px-4">
-            <div th:replace="fragments/teacher-topbar :: teacherTopbar"></div>
+            <div th:replace="~{fragments/teacher-topbar :: teacherTopbar}"></div>
 
             <div class="d-flex align-items-center justify-content-between mt-3 mb-3">
                 <div>
@@ -42,7 +42,7 @@
                 <div class="col-md-4">
                     <div class="stat-card">
                         <div class="label">Units published</div>
-                        <div class="num" th:text="${#lists.size(#lists.collect(subjectsSummary, 'unitsCount')) > 0 ? #lists.sum(#lists.collect(subjectsSummary,'unitsCount')) : 0}">0</div>
+                        <div class="num" th:text="${totals.units}">0</div>
                     </div>
                 </div>
             </div>
@@ -67,7 +67,8 @@
                             <td th:text="${s.materialsCount}"></td>
                             <td th:text="${s.unitsCount}"></td>
                             <td>
-                                <a class="btn btn-sm btn-outline-primary" th:href="@{/learning-materials}?subject=${s.subjectCode}">View Materials</a>
+                                <!-- Fixed: use Thymeleaf URL expression with parameter mapping to generate query param -->
+                                <a class="btn btn-sm btn-outline-primary" th:href="@{/learning-materials(subject=${s.subjectCode})}">View Materials</a>
                                 <a class="btn btn-sm btn-outline-secondary" th:href="@{/instructor/material/add}">Add Material</a>
                             </td>
                         </tr>
@@ -112,5 +113,17 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Auto-open Add Subject modal if requested -->
+<div th:if="${showAddModal}">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            var myModal = new bootstrap.Modal(document.getElementById('addSubjectModal'));
+            myModal.show();
+        });
+        /*]]>*/
+    </script>
+</div>
 </body>
 </html>

@@ -6,22 +6,34 @@
 
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link active d-flex align-items-center" th:href="@{/instructor/dashboard}">
+            <a class="nav-link d-flex align-items-center"
+               th:classappend="${activeNav == null} ? 'active' : (activeNav == 'dashboard' ? 'active' : '')"
+               th:href="@{/instructor/dashboard}">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link d-flex align-items-center" th:href="@{/instructor/courses}">
+        <li class="nav-item d-flex align-items-center justify-content-between">
+            <a class="nav-link d-flex align-items-center flex-grow-1 me-2"
+               th:classappend="${activeNav == 'courses'} ? 'active' : ''"
+               th:href="@{/instructor/courses}">
                 <i class="bi bi-journal-bookmark"></i> Courses
+            </a>
+            <!-- Quick add subject button: navigates to courses page and requests the modal to open -->
+            <a class="btn btn-sm btn-outline-light me-1" th:href="@{/instructor/courses(showAdd=1)}" title="Add Subject">
+                <i class="bi bi-plus-lg"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link d-flex align-items-center" th:href="@{/instructor/students}">
+            <a class="nav-link d-flex align-items-center"
+               th:classappend="${activeNav == 'students'} ? 'active' : ''"
+               th:href="@{/instructor/students}">
                 <i class="bi bi-people"></i> Students
             </a>
         </li>
         <li class="nav-item mt-2">
-            <a class="nav-link d-flex align-items-center" th:href="@{/instructor/settings}">
+            <a class="nav-link d-flex align-items-center"
+               th:classappend="${activeNav == 'settings'} ? 'active' : ''"
+               th:href="@{/instructor/settings}">
                 <i class="bi bi-gear"></i> Settings
             </a>
         </li>

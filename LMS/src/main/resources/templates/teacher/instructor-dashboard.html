@@ -20,13 +20,13 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar fragment (replaced into DOM so column is direct child of .row) -->
-        <div th:replace="fragments/teacher-sidebar :: teacherSidebar"></div>
+        <div th:replace="~{fragments/teacher-sidebar :: teacherSidebar}"></div>
 
         <!-- Main content -->
         <main class="col-lg-10 ms-sm-auto px-4">
 
             <!-- Topbar -->
-            <div th:replace="fragments/teacher-topbar :: teacherTopbar"></div>
+            <div th:replace="~{fragments/teacher-topbar :: teacherTopbar}"></div>
 
             <!-- Welcome -->
             <div class="d-flex align-items-center justify-content-between mb-3">
