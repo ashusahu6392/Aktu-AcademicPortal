@@ -1,30 +1,9 @@
 package com.app.config;
 
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.app.entity.Instructor;
-import com.app.repository.InstructorRepository;
-
-@Configuration
-public class AdminDataInitializer {
-
-    @Bean
-    public CommandLineRunner seedAdmin(InstructorRepository instructorRepository, PasswordEncoder passwordEncoder) {
-        return args -> {
-            // create an admin instructor if none exists
-            String adminEmail = "admin@example.com";
-            if (instructorRepository.findByEmail(adminEmail).isEmpty()) {
-                Instructor admin = new Instructor();
-                admin.setName("Site Admin");
-                admin.setEmail(adminEmail);
-                admin.setPassword(passwordEncoder.encode("admin123"));
-                admin.setRole("ROLE_ADMIN");
-                instructorRepository.save(admin);
-                System.out.println("[AdminDataInitializer] Created default admin: " + adminEmail + " (password: admin123)");
-            }
-        };
-    }
-}
+/*
+ * AdminDataInitializer removed.
+ *
+ * The previous implementation seeded a default Instructor admin at application startup.
+ * That logic has been intentionally removed. If admin seeding is required in the future,
+ * implement a new @Configuration class that performs the seeding explicitly.
+ */

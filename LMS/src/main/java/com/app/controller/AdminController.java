@@ -192,13 +192,6 @@ public class AdminController {
         return "redirect:/admin/subjects";
     }
 
-    // Temporary test login endpoint (DEV ONLY) - sets admin session and redirects to admin dashboard
-    @GetMapping("/test-login")
-    public String testLogin(HttpSession session) {
-        session.setAttribute("isAdmin", true);
-        return "redirect:/admin";
-    }
-
     // Admin login page
     @GetMapping("/login")
     public String showLogin(Model model) {
