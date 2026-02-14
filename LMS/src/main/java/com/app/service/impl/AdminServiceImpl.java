@@ -1,6 +1,7 @@
 package com.app.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.entity.Branch;
 import com.app.entity.Course;
@@ -9,6 +10,9 @@ import com.app.repository.BranchRepository;
 import com.app.repository.CourseRepository;
 import com.app.repository.SubjectRepository;
 import com.app.service.AdminService;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -80,11 +84,19 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public void deleteSubject(String subjectCode) {
         Subject subject = subjectRepository.findById(subjectCode)
                 .orElseThrow(() -> new RuntimeException("Subject not found"));
-        // Remove associations with branches first
-        subject.getBranches().forEach(b -> b.getSubjects().remove(subject));
+
+        // Iterate over a copy of the branches set to avoid ConcurrentModification and ensure we update the owning side
+        Set<Branch> branches = new HashSet<>(subject.getBranches());
+        for (Branch b : branches) {
+            b.getSubjects().remove(subject); // update owning side
+            branchRepository.save(b); // persist the change so join table rows are removed
+        }
+
+        // Now safe to delete the subject
         subjectRepository.delete(subject);
     }
 }
