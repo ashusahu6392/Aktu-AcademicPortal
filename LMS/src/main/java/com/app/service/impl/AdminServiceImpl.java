@@ -51,12 +51,16 @@ public class AdminServiceImpl implements AdminService {
 
         Subject subject = Subject.of(subjectCode, subjectName);
 
-        branch.getSubjects().add(subject);
-        subject.getBranches().add(branch);
+        // Persist the Subject first so it becomes managed, then associate it with the existing Branch
+        Subject saved = subjectRepository.save(subject);
 
-        subjectRepository.save(subject);
+        // Use helper to maintain both sides
+        branch.addSubject(saved);
 
-        return subject;
+        // Save branch to update the join table
+        branchRepository.save(branch);
+
+        return saved;
     }
 
     @Override
