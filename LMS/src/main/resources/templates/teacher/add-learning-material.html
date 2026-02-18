@@ -16,8 +16,7 @@
     <!-- Shared Dashboard CSS -->
     <link th:href="@{/css/dashboard.css}" rel="stylesheet" />
 
-    <!-- CKEditor 5 Full Build -->
-    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
 
 </head>
 <body>
@@ -103,25 +102,51 @@
     </div>
 </div>
 
-<!-- CKEditor Configuration -->
+    <!-- TinyMCE CDN -->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
 <script>
-    ClassicEditor
-        .create(document.querySelector('#editor'), {
-            toolbar: [
-                'heading', '|', 'bold', 'italic', 'underline', 'strikethrough',
-                'fontSize', 'fontColor', 'fontBackgroundColor', '|',
-                'bulletedList', 'numberedList', '|', 'link', 'insertTable', 'blockQuote', '|', 'undo', 'redo'
-            ],
-            heading: {
-                options: [
-                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
-                ]
+document.addEventListener('DOMContentLoaded', function() {
+    var sel = document.querySelector('#editor');
+    if (!sel) { console.error('Editor textarea not found (teacher page)'); return; }
+
+    if (typeof tinymce === 'undefined') {
+        console.error('TinyMCE script not loaded (teacher page)');
+        return;
+    }
+
+    try {
+        tinymce.init({
+            selector: '#editor',
+            menubar: true,
+            branding: true,
+            height: 400,
+            plugins: 'lists link table advlist textcolor',
+            toolbar: 'undo redo | bold italic underline | forecolor backcolor | bullist numlist | link | table',
+            setup: function (editor) {
+                editor.on('init', function () {
+                    try {
+                        var body = editor.getBody && editor.getBody();
+                        if (body) {
+                            body.setAttribute('contenteditable', 'true');
+                        }
+                        if (editor.mode && typeof editor.mode.set === 'function') {
+                            try { editor.mode.set('design'); } catch(e) { console.warn('mode.set failed', e); }
+                        }
+                        editor.focus();
+                        setTimeout(function(){
+                            try { if (editor.mode && typeof editor.mode.set === 'function') editor.mode.set('design'); var b2 = editor.getBody && editor.getBody(); if (b2) b2.setAttribute('contenteditable','true'); } catch(e) {}
+                        }, 50);
+                    } catch (e) { console.warn('Could not force contentEditable', e); }
+                    console.log('TinyMCE initialized (teacher page)');
+                });
+                editor.on('error', function (e) { console.error('TinyMCE init error (teacher page)', e); });
             }
-        })
-        .catch(error => { console.error(error); });
+        });
+    } catch (e) {
+        console.error('TinyMCE initialization exception (teacher page)', e);
+    }
+});
 </script>
 
 </body>
