@@ -101,53 +101,17 @@
         </main>
     </div>
 </div>
-
-    <!-- TinyMCE CDN -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/tinymce@5/tinymce.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var sel = document.querySelector('#editor');
-    if (!sel) { console.error('Editor textarea not found (teacher page)'); return; }
-
-    if (typeof tinymce === 'undefined') {
-        console.error('TinyMCE script not loaded (teacher page)');
-        return;
-    }
-
-    try {
-        tinymce.init({
-            selector: '#editor',
-            menubar: true,
-            branding: true,
-            height: 400,
-            plugins: 'lists link table advlist textcolor',
-            toolbar: 'undo redo | bold italic underline | forecolor backcolor | bullist numlist | link | table',
-            setup: function (editor) {
-                editor.on('init', function () {
-                    try {
-                        var body = editor.getBody && editor.getBody();
-                        if (body) {
-                            body.setAttribute('contenteditable', 'true');
-                        }
-                        if (editor.mode && typeof editor.mode.set === 'function') {
-                            try { editor.mode.set('design'); } catch(e) { console.warn('mode.set failed', e); }
-                        }
-                        editor.focus();
-                        setTimeout(function(){
-                            try { if (editor.mode && typeof editor.mode.set === 'function') editor.mode.set('design'); var b2 = editor.getBody && editor.getBody(); if (b2) b2.setAttribute('contenteditable','true'); } catch(e) {}
-                        }, 50);
-                    } catch (e) { console.warn('Could not force contentEditable', e); }
-                    console.log('TinyMCE initialized (teacher page)');
-                });
-                editor.on('error', function (e) { console.error('TinyMCE init error (teacher page)', e); });
-            }
-        });
-    } catch (e) {
-        console.error('TinyMCE initialization exception (teacher page)', e);
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    tinymce.init({
+        selector: '#editor',
+        height: 400,
+        menubar: false,
+        plugins: 'lists link table advlist',
+        toolbar: 'undo redo | bold italic underline | fontsizeselect | forecolor backcolor | bullist numlist | link | table'
+    });
 });
 </script>
-
 </body>
 </html>

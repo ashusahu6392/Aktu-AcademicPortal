@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Add Learning Material</title>
-
-   
 </head>
 <body>
 
 <h2>Add Learning Material</h2>
 
-<form th:action="@{/learning-materials/save}" th:object="${material}" method="post">
+<form th:action="@{/learning-materials/save}" 
+      th:object="${material}" 
+      method="post">
 
     <label>Title:</label>
     <input type="text" th:field="*{title}" required />
@@ -29,67 +29,17 @@
     <br><br>
     <button type="submit">Save Material</button>
 </form>
-
-<!-- visible status for debugging TinyMCE loading - kept for minimal debug but updated to reflect TinyMCE -->
-<div id="editor-status" style="margin-top:8px;color:#d00;font-weight:600">Status: initializing...</div>
-
-<!-- TinyMCE CDN -->
-<script src="https://cdn.tiny.cloud/1/a66nww6x7frxrxk4niqjtzo89fndnync1zsf3vdviovkg7hv/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.jsdelivr.net/npm/tinymce@5/tinymce.min.js"></script>
 <script>
-    // Initialize TinyMCE after DOM is ready. Keep textarea id as #editor for Thymeleaf binding.
-    document.addEventListener('DOMContentLoaded', function () {
-        var statusEl = document.getElementById('editor-status');
-        function setStatus(msg, color) { statusEl.innerText = 'Status: ' + msg; if (color) statusEl.style.color = color; }
-
-        if (typeof tinymce === 'undefined') {
-            setStatus('TinyMCE script not loaded', '#b00');
-            console.error('TinyMCE script not loaded');
-            return;
-        }
-
-        setStatus('TinyMCE script loaded, initializing...', '#0a0');
-
-        try {
-            tinymce.init({
-                selector: '#editor',
-                menubar: true,
-                branding: true,
-                height: 400,
-                plugins: 'lists link table advlist textcolor',
-                toolbar: 'undo redo | bold italic underline | forecolor backcolor | bullist numlist | link | table',
-                // Ensure the editor plays nicely inside forms and with Thymeleaf-bound textarea
-                setup: function (editor) {
-                    editor.on('init', function () {
-                        // Force the editor body to be contentEditable and focus it to allow typing
-                        try {
-                            var body = editor.getBody && editor.getBody();
-                            if (body) {
-                                body.setAttribute('contenteditable', 'true');
-                            }
-                            // prefer switching TinyMCE mode to 'design' if available
-                            if (editor.mode && typeof editor.mode.set === 'function') {
-                                try { editor.mode.set('design'); } catch(e) { console.warn('mode.set failed', e); }
-                            }
-                            editor.focus();
-                            // fallback: ensure mode is design shortly after init in case something toggles readonly later
-                            setTimeout(function(){
-                                try {
-                                    if (editor.mode && typeof editor.mode.set === 'function') editor.mode.set('design');
-                                    var b2 = editor.getBody && editor.getBody(); if (b2) b2.setAttribute('contenteditable','true');
-                                } catch(e) { /* ignore */ }
-                            }, 50);
-                        } catch (e) { console.warn('Could not force contentEditable', e); }
-                        setStatus('TinyMCE initialized successfully', 'green');
-                    });
-                    editor.on('error', function (e) { console.error('TinyMCE init error', e); setStatus('TinyMCE initialization error', '#b00'); });
-                }
-            });
-        } catch (err) {
-            console.error('TinyMCE initialization exception', err);
-            setStatus('TinyMCE initialization exception: ' + (err && err.message ? err.message : String(err)), '#b00');
-        }
+document.addEventListener('DOMContentLoaded', function () {
+    tinymce.init({
+        selector: '#editor',
+        height: 400,
+        menubar: false,
+        plugins: 'lists link table advlist',
+        toolbar: 'undo redo | bold italic underline | fontsizeselect | forecolor backcolor | bullist numlist | link | table'
     });
+});
 </script>
-
 </body>
 </html>

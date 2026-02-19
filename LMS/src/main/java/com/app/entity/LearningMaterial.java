@@ -28,7 +28,7 @@ public class LearningMaterial {
 
     @Lob
     @Column(columnDefinition = "LONGTEXT")
-    private String content;  // CKEditor HTML
+    private String content; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instructor_id", nullable = false)
