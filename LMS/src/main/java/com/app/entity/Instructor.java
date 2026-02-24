@@ -27,7 +27,7 @@ public class Instructor {
     private String password;
 
     @Column(length = 50)
-    private String role = "ROLE_INSTRUCTOR";
+    private String role = "INSTRUCTOR";
 
     @ManyToMany
     @JoinTable(
