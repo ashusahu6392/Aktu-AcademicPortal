@@ -16,11 +16,16 @@
         <div class="auth-subtitle">Sign in to continue</div>
     </div>
 
-    <div th:if="${error}" class="alert alert-danger" role="alert">
-        <span th:text="${error}"></span>
+    <div th:if="${param.error}" class="alert alert-danger">
+        Invalid email or password
     </div>
 
-    <form th:action="@{/instructor/login}" method="post">
+    <div th:if="${param.logout}" class="alert alert-success">
+        You have been logged out successfully
+    </div>
+
+    <!-- Post to the Spring Security processing URL to let the framework authenticate -->
+    <form th:action="@{/perform_login}" method="post">
         <div class="mb-3">
             <label class="form-label">Email</label>
             <input type="email" name="email" class="form-control" placeholder="you@school.edu" required />
@@ -28,8 +33,12 @@
 
         <div class="mb-3">
             <label class="form-label">Password</label>
+            <!-- Spring Security expects the password parameter name 'password' by default -->
             <input type="password" name="password" class="form-control" placeholder="Your password" required />
         </div>
+         <input type="hidden"
+           th:name="${_csrf.parameterName}"
+           th:value="${_csrf.token}"/>
 
         <div class="d-grid">
             <button class="btn btn-primary btn-lg btn-primary-custom" type="submit">Sign in</button>
