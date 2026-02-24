@@ -235,6 +235,6 @@ public class AdminController {
     public String logout(HttpSession session) {
         session.removeAttribute("isAdmin");
         session.removeAttribute("adminId");
-        return "redirect:/";
+        return "redirect:/intructor/login?logout";
     }
 }
