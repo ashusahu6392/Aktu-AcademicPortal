@@ -114,11 +114,8 @@ public class InstructorWebController {
 
     @GetMapping("/dashboard")
     public String showDashboard(Model model, HttpSession session) {
-        Object iid = session.getAttribute("instructorId");
-        if (iid == null) {
-            return "redirect:/instructor/login";
-        }
-        Long instructorId = (Long) iid;
+        Long instructorId = ensureInstructorIdInSession(session);
+        if (instructorId == null) return "redirect:/instructor/login";
         Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
         if (instructor == null) {
             session.removeAttribute("instructorId");
@@ -140,11 +137,8 @@ public class InstructorWebController {
                                         @RequestParam String subjectCode,
                                         HttpSession session,
                                         Model model) {
-        Object iid = session.getAttribute("instructorId");
-        if (iid == null) {
-            return "redirect:/instructor/login";
-        }
-        Long instructorId = (Long) iid;
+        Long instructorId = ensureInstructorIdInSession(session);
+        if (instructorId == null) return "redirect:/instructor/login";
         Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
         if (instructor == null) {
             session.removeAttribute("instructorId");
@@ -167,11 +161,8 @@ public class InstructorWebController {
 
     @GetMapping("/material/add")
     public String showAddMaterialForm(Model model, HttpSession session) {
-        Object iid = session.getAttribute("instructorId");
-        if (iid == null) {
-            return "redirect:/instructor/login";
-        }
-        Long instructorId = (Long) iid;
+        Long instructorId = ensureInstructorIdInSession(session);
+        if (instructorId == null) return "redirect:/instructor/login";
         Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
         if (instructor == null) {
             session.removeAttribute("instructorId");
@@ -192,11 +183,8 @@ public class InstructorWebController {
     // List instructor's uploaded materials
     @GetMapping("/materials")
     public String listMaterials(Model model, HttpSession session) {
-        Object iid = session.getAttribute("instructorId");
-        if (iid == null) {
-            return "redirect:/instructor/login";
-        }
-        Long instructorId = (Long) iid;
+        Long instructorId = ensureInstructorIdInSession(session);
+        if (instructorId == null) return "redirect:/instructor/login";
         List<LearningMaterial> materials = learningMaterialService.getLearningMaterialsByInstructor(instructorId);
         model.addAttribute("materials", materials);
         Instructor instr = instructorRepository.findById(instructorId).orElse(null);
@@ -206,11 +194,8 @@ public class InstructorWebController {
 
     @GetMapping("/material/{id}/edit")
     public String editMaterialForm(@PathVariable("id") Long id, Model model, HttpSession session) {
-        Object iid = session.getAttribute("instructorId");
-        if (iid == null) {
-            return "redirect:/instructor/login";
-        }
-        Long instructorId = (Long) iid;
+        Long instructorId = ensureInstructorIdInSession(session);
+        if (instructorId == null) return "redirect:/instructor/login";
 
         LearningMaterial material = learningMaterialRepository.findById(id).orElse(null);
         if (material == null) {
@@ -238,11 +223,8 @@ public class InstructorWebController {
                                  @ModelAttribute LearningMaterial formData,
                                  HttpSession session,
                                  Model model) {
-        Object iid = session.getAttribute("instructorId");
-        if (iid == null) {
-            return "redirect:/instructor/login";
-        }
-        Long instructorId = (Long) iid;
+        Long instructorId = ensureInstructorIdInSession(session);
+        if (instructorId == null) return "redirect:/instructor/login";
 
         LearningMaterial existing = learningMaterialRepository.findById(id).orElse(null);
         if (existing == null) {
@@ -281,15 +263,12 @@ public class InstructorWebController {
 
     @PostMapping("/material/save")
     public String saveMaterial(@ModelAttribute LearningMaterial material,
-                               @RequestParam("subjectId") String subjectId,
-                               @RequestParam(value = "file", required = false) MultipartFile file,
-                               HttpSession session,
-                               Model model) {
-        Object iid = session.getAttribute("instructorId");
-        if (iid == null) {
-            return "redirect:/instructor/login";
-        }
-        Long instructorId = (Long) iid;
+                                @RequestParam("subjectId") String subjectId,
+                                @RequestParam(value = "file", required = false) MultipartFile file,
+                                HttpSession session,
+                                Model model) {
+        Long instructorId = ensureInstructorIdInSession(session);
+        if (instructorId == null) return "redirect:/instructor/login";
         Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
         if (instructor == null) {
             session.removeAttribute("instructorId");
@@ -320,23 +299,13 @@ public class InstructorWebController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/";
+        return "redirect:/instructor/login?logout";
     }
 
     @GetMapping("/overview")
     public String showInstructorOverview(Model model, HttpSession session) {
-        Object iid = session.getAttribute("instructorId");
-        if (iid == null) {
-            return "redirect:/instructor/login";
-        }
-        Long instructorId;
-        try {
-            if (iid instanceof Long) instructorId = (Long) iid;
-            else if (iid instanceof Integer) instructorId = ((Integer) iid).longValue();
-            else instructorId = Long.valueOf(String.valueOf(iid));
-        } catch (Exception ex) {
-            return "redirect:/instructor/login";
-        }
+        Long instructorId = ensureInstructorIdInSession(session);
+        if (instructorId == null) return "redirect:/instructor/login";
 
         Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
         if (instructor == null) {
@@ -366,18 +335,8 @@ public class InstructorWebController {
     // New: show courses page - reuse overview template but set active nav
     @GetMapping("/courses")
     public String showCourses(Model model, HttpSession session, @RequestParam(value = "showAdd", required = false) Integer showAdd) {
-        Object iid = session.getAttribute("instructorId");
-        if (iid == null) {
-            return "redirect:/instructor/login";
-        }
-        Long instructorId;
-        try {
-            if (iid instanceof Long) instructorId = (Long) iid;
-            else if (iid instanceof Integer) instructorId = ((Integer) iid).longValue();
-            else instructorId = Long.valueOf(String.valueOf(iid));
-        } catch (Exception ex) {
-            return "redirect:/instructor/login";
-        }
+        Long instructorId = ensureInstructorIdInSession(session);
+        if (instructorId == null) return "redirect:/instructor/login";
 
         Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
         if (instructor == null) {
@@ -412,18 +371,8 @@ public class InstructorWebController {
                                           @RequestParam String subjectName,
                                           HttpSession session,
                                           Model model) {
-        Object iid = session.getAttribute("instructorId");
-        if (iid == null) {
-            return "redirect:/instructor/login";
-        }
-        Long instructorId;
-        try {
-            if (iid instanceof Long) instructorId = (Long) iid;
-            else if (iid instanceof Integer) instructorId = ((Integer) iid).longValue();
-            else instructorId = Long.valueOf(String.valueOf(iid));
-        } catch (Exception ex) {
-            return "redirect:/instructor/login";
-        }
+        Long instructorId = ensureInstructorIdInSession(session);
+        if (instructorId == null) return "redirect:/instructor/login";
 
         Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
         if (instructor == null) {
@@ -457,5 +406,31 @@ public class InstructorWebController {
         }
 
         return "redirect:/instructor/overview";
+    }
+
+    // Helper: ensure session has instructorId. If missing but instructorEmail is present (set by security success handler), resolve and set instructorId.
+    private Long ensureInstructorIdInSession(jakarta.servlet.http.HttpSession session) {
+        Object iid = session.getAttribute("instructorId");
+        if (iid != null) {
+            try {
+                if (iid instanceof Long) return (Long) iid;
+                if (iid instanceof Integer) return ((Integer) iid).longValue();
+                return Long.valueOf(String.valueOf(iid));
+            } catch (Exception ex) {
+                session.removeAttribute("instructorId");
+                return null;
+            }
+        }
+
+        Object emailObj = session.getAttribute("instructorEmail");
+        if (emailObj instanceof String email) {
+            var opt = instructorRepository.findByEmail(email);
+            if (opt.isPresent()) {
+                Long id = opt.get().getId();
+                session.setAttribute("instructorId", id);
+                return id;
+            }
+        }
+        return null;
     }
 }
