@@ -1,5 +1,14 @@
 # AKTU Academic Portal (LMS) — Refactor Notes
 
+## 🔄 Repository Update Notice
+
+This is the older version of the project.
+
+A fully upgraded **React + Spring Boot full-stack final project** with **JWT authentication, email integration, secure APIs, database connectivity, and production-level architecture** will be uploaded very soon.
+
+This upcoming version will better represent my current full-stack development skills.
+
+Stay tuned for the final release.
 This repository contains a Spring Boot LMS application. This README documents a refactor that renamed several domain concepts and updated controllers, services, repositories and UI templates accordingly.
 
 Summary of renames
